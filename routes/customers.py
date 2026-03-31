@@ -1,8 +1,12 @@
 from datetime import datetime, timezone
-import sqlite3
+from dotenv import load_dotenv
+import os
+
+import psycopg
 
 from flask import Blueprint, request, render_template
 
+load_dotenv()
 customers_bp = Blueprint('customers', __name__)
 
 @customers_bp.route("/new_customer")
@@ -16,7 +20,7 @@ def add():
     phone = request.form.get("phone")
     created_at = datetime.now(timezone.utc)
 
-    conn = sqlite3.connect("crm.db")
+    conn = psycopg.connect(os.environ.get("DATABASE_URL"))
     cursor = conn.cursor()
 
     cursor.execute("INSERT INTO customers (name, email, phone, created_at) VALUES (?, ?, ?, ?)",
@@ -30,7 +34,7 @@ def add():
 
 @customers_bp.route("/view_customers")
 def view():
-    conn = sqlite3.connect("crm.db")
+    conn = psycopg.connect(os.environ.get("DATABASE_URL"))
     cursor = conn.cursor()
     
     cursor.execute("SELECT * FROM customers")
