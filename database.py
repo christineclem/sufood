@@ -1,13 +1,14 @@
 import os
 
 from dotenv import load_dotenv
-import psycopg
+import psycopg2
 
 load_dotenv()
+DATABASE_URL = os.getenv("DATABASE_URL")
 
 def init_db():
-    conn = psycopg.connect(os.environ.get("DATABASE_URL"))
-    cursor = conn.cursor()
+    connection = psycopg2.connect(DATABASE_URL)
+    cursor = connection.cursor()
 
     cursor.execute("""
     CREATE TABLE IF NOT EXISTS customers (
@@ -49,5 +50,5 @@ def init_db():
     )
     """)
 
-    conn.commit()
-    conn.close()
+    connection.commit()
+    connection.close()
