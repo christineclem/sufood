@@ -23,7 +23,7 @@ def add():
     conn = psycopg.connect(os.environ.get("DATABASE_URL"))
     cursor = conn.cursor()
 
-    cursor.execute("INSERT INTO customers (name, email, phone, created_at) VALUES (?, ?, ?, ?)",
+    cursor.execute("INSERT INTO customers (name, email, phone, created_at) VALUES (%s, %s, %s, %s)",
                    (name, email, phone, created_at)
     )
     
