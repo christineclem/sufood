@@ -1,3 +1,4 @@
+import os
 from flask import Flask, request
 #from flask_wtf.csrf import csrf_exempt
 
@@ -22,4 +23,8 @@ def tally_webhook():
     return "", 200
 
 if __name__ == "__main__":
-    app.run(debug = True)
+    app.run(
+        host="0.0.0.0",
+        port=int(os.environ.get("PORT", 5000)),
+        debug=True,
+    )
