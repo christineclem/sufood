@@ -14,7 +14,7 @@ def home():
     init_db()
     return "Database ready :)"
 
-@app.route("/tally-webhook", methods=["POST"])
+@app.route("/tally-webhook", methods=["GET", "POST"])
 def tally_webhook():
     data = request.json
     print(data)  # shows up in Render logs
