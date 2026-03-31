@@ -1,4 +1,3 @@
-from datetime import datetime, timezone
 import sqlite3
 
 def init_db():
