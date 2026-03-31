@@ -1,6 +1,5 @@
 import os
 from flask import Flask, request
-#from flask_wtf.csrf import csrf_exempt
 
 from database import init_db
 from routes.customers import customers_bp
@@ -15,7 +14,6 @@ def home():
     return "Database ready :)"
 
 @app.route("/tally-webhook", methods=["POST"])
-#@csrf_exempt
 def tally_webhook():
     data = request.json
     with open("tally_log.txt", "a") as f:
