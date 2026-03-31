@@ -1,4 +1,5 @@
 import os
+
 from flask import Flask, request
 
 from database import init_db
