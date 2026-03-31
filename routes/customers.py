@@ -3,7 +3,7 @@ import sqlite3
 
 from flask import Blueprint, request, render_template
 
-customers_bp = Blueprint('cutomers', __name__)
+customers_bp = Blueprint('customers', __name__)
 
 @customers_bp.route("/new_customer")
 def new_customer():
