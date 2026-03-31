@@ -17,8 +17,7 @@ def home():
 @app.route("/tally-webhook", methods=["POST"])
 def tally_webhook():
     data = request.json
-    with open("tally_log.txt", "a") as f:
-        f.write(str(data) + "\n")
+    print(data)  # shows up in Render logs
     return "", 200
 
 if __name__ == "__main__":
