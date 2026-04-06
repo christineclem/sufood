@@ -1,54 +1,64 @@
-import os
-
-from dotenv import load_dotenv
-import psycopg2
-
-load_dotenv()
-DATABASE_URL = os.getenv("DATABASE_URL")
+from customers_functions import get_connection
 
 def init_db():
-    connection = psycopg2.connect(DATABASE_URL)
-    cursor = connection.cursor()
-
+    conn = get_connection()
+    cursor = conn.cursor()
+    # id INTERGER PRIMARY KEY -> SERIAL PRIMARY KEY (psycopg2)
     cursor.execute("""
     CREATE TABLE IF NOT EXISTS customers (
-        id SERIAL PRIMARY KEY,
-        name TEXT ,
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name TEXT,
         email TEXT,
         phone TEXT,
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        marketing BOOLEAN DEFAULT FALSE,
+        newsletter BOOLEAN DEFAULT FALSE,
+        created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+        deleted_at TIMESTAMP WITH TIME ZONE DEFAULT NULL
     )
     """)
 
     cursor.execute("""
     CREATE TABLE IF NOT EXISTS orders (
-        id SERIAL PRIMARY KEY,
-        customer_id INTEGER,
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        customer_id INTEGER NOT NULL,
+        created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+        delivery TEXT,
+        paid_in_full BOOLEAN DEFAULT FALSE,
+        payment_method TEXT,
+        payment_plan TEXT,
         FOREIGN KEY (customer_id) REFERENCES customers(id)
     )
     """)
 
     cursor.execute("""
     CREATE TABLE IF NOT EXISTS products (
-        id SERIAL PRIMARY KEY,
-        price REAL,
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-        updated_at TIMESTAMP
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        price NUMERIC (10, 2),
+        created_at TIMESTAMP,
+        updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
     )
     """)
 
     cursor.execute("""
     CREATE TABLE IF NOT EXISTS order_items (
-        id SERIAL PRIMARY KEY,
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
         order_id INTEGER ,
         product_id INTEGER,
         quantity INTEGER,
-        price_at_time REAL,
+        price_at_time NUMERIC (10, 2),
         FOREIGN KEY (order_id) REFERENCES orders(id),
         FOREIGN KEY (product_id) REFERENCES products(id)
     )
     """)
 
-    connection.commit()
-    connection.close()
+    conn.commit()
+    conn.close()
+
+def reset_customers():
+    conn = get_connection()
+    cur = conn.cursor()
+
+    cur.execute("DROP TABLE customers;")
+
+    conn.commit()
+    conn.close()

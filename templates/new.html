@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head> 
+		<title>Hello!</title>
+	<head>
+	<body>
+		Hello, world!
+
+        Add a new customer with this form!
+
+        <form action="/new_customer" method="POST">
+            <input type="text" placeholder="Full Name" name="new_name">
+            <input type="text" placeholder="Email Address" name="new_email">
+            <input type="text" placeholder="Telephone Number" name="new_phone">
+			Marketing:
+			<input type="checkbox" name="new_marketing">
+			Newsletter Opt-In:
+			<input type="checkbox" name="new_newsletter">
+
+			<button type="submit">Submit</button>
+        </form>
+	</body>
+</html>
