@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, request
 
-from database import init_db, reset_customers
-from customers_functions import get_all_customers, insert_customer, update_customer
+from database_functions import init_db, reset_customers
+from customers_functions import get_all_customers, insert_customer, update_customer, value_by_label
 
 customers_bp = Blueprint('customers', __name__)
 
@@ -13,34 +13,56 @@ def view():
 @customers_bp.route("/new_customer", methods=["GET", "POST"])
 def new_customer():
     if request.method == "POST":
-        data = request.form
+        raw_data = request.json
+        # `fields` is a list of dicts
+        data = raw_data['data']['fields']
+        data_dict = {
+            "tally_id": value_by_label("customer_existing", data), # link with our primary keys
+            "new_name": value_by_label("customer_new", data),
+            "new_email": value_by_label("email_new", data),
+            "new_phone": value_by_label("tel_new", data),
+            "new_marketing": value_by_label("comms_new (Opt in to marketing communications)", data),
+            "new_newsletter": value_by_label("comms_new (Join newsletter mailing list)", data),
+            "updated_email": value_by_label("email_update", data),
+            "updated_phone": value_by_label("tel_update", data),
+            "updated_marketing_in": value_by_label("Marketing Communications (Opt in to marketing communications)", data), # opt-in
+            "updated_marketing_out": value_by_label("Marketing Communications (Opt out of marketing communications)", data), # opt-out
+            "updated_newsletter_in": value_by_label("Newsletter (Join newsletter mailing list)", data), #opt-in
+            "updated_newsletter_out": value_by_label("Newsletter (Unsubscribe from newsletter mailing list)", data), #opt-out
+            "elixir_190_amt": value_by_label("Elixir (190mL)", data),
+            "elixir_250_amt": value_by_label("Elixir (250mL)", data),
+            "delivery": value_by_label("Delivery options", data), # make a table with these values for pickup vs delivery
+            "paid": value_by_label("payment", data),
+            "payment_method": value_by_label("Payment method", data),
+            "payment_plan": value_by_label("Plan for payment", data)
+            }
+        
         new_data = {}
 
-        if data['new_name'] != "":
-            new_data['name'] = data['new_name']
+        if data_dict['new_name'] is None:
+            new_data['name'] = data_dict['new_name']
         else:
             new_data['name'] = None
     
-        if data['new_email'] != "":
-            new_data['email'] = data['new_email']
+        if data_dict['new_email'] is None:
+            new_data['email'] = data_dict['new_email']
         else:
             new_data['email'] = None
 
-        if data['new_phone'] != "":
-            new_data['phone'] = data['new_phone']
+        if data_dict['new_phone'] is None:
+            new_data['phone'] = data_dict['new_phone']
         else:
             new_data['phone'] = None
 
-        # The following syntax is used because the form reports nothing if these boxes are unchecked
-        if "new_marketing" in data:
-            new_data['marketing'] = True
-        else:
+        if data_dict['new_marketing'] is None:
             new_data['marketing'] = False
-
-        if "new_newsletter" in data:
-            new_data['newsletter'] = True
         else:
+            new_data['marketing'] = True
+
+        if data_dict['new_newsletter'] is None:
             new_data['newsletter'] = False
+        else:
+            new_data['newsletter'] = True
 
         insert_customer(new_data)
         
@@ -81,7 +103,7 @@ def edit_customer():
         else:
             update_data['marketing'] = False
 
-        if "updated_newsleter" in data:
+        if "updated_newsletter" in data:
             update_data['newsletter'] = True
         else:
             update_data['newsletter'] = False
