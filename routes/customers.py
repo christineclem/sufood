@@ -1,5 +1,3 @@
-import re
-
 from flask import Blueprint, render_template, request
 
 from database import init_db, reset_customers
@@ -11,16 +9,6 @@ customers_bp = Blueprint('customers', __name__)
 def view():
     rows = get_all_customers()
     return {"customers": rows}
-
-
-'''
-# Data cleaning
-## Trimming
->>> import re
->>> re.sub(' +', ' ', 'The     quick brown    fox')
-
-'ImmutableMultiDict' objects are immutable
-'''
 
 @customers_bp.route("/new_customer", methods=["GET", "POST"])
 def new_customer():

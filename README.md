@@ -20,6 +20,7 @@ Connect repo to Render.com and set app.py as the entry point.
 POST /webhook — receives Tally form submissions
 
 ## Roadmap
+- Sales tracking - 27 Apr 2026
 - Customer anonymisation (GDPR delete) - 28 Apr 2026
 - Loyal customer discount labelling (fixed & variable) - 20 Apr 2026
 - Tally-independent HTML submission interface - 4 May 2026

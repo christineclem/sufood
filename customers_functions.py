@@ -1,14 +1,16 @@
 # Functions
+from dotenv import load_dotenv
 import os
 
 import psycopg2
-import sqlite3
+
+load_dotenv()
+DATABASE_URL = os.getenv("DATABASE_URL")
 
 def get_connection():
-    connection = sqlite3.connect("test_crm.db")
+    connection = psycopg2.connect(DATABASE_URL)
     return connection
 
-# From YouTube tutorial: https://youtu.be/AQFsWwxW0hU?si=2Dv98QQj3ECGzGaW
 def dict_factory(cursor, row):
     fields = [x[0] for x in cursor.description]
     return {key:value for key, value in zip(fields, row)}
@@ -28,10 +30,10 @@ def get_all_customers():
 def insert_customer(data):
     conn = get_connection()
     cur = conn.cursor()
-    # '?' must be changed to '%s' in psycopg2
+    
     cur.execute("""
         INSERT INTO customers (name, email, phone, marketing, newsletter)
-        VALUES (?, ?, ?, ?, ?)
+        VALUES (%s, %s, %s, %s, %s)
     """, (
         data['name'],
         data['email'],
@@ -49,8 +51,8 @@ def update_customer(update_data):
 
     cur.execute("""
         UPDATE customers
-        SET name = ?, email = ?, phone = ?, marketing = ?, newsletter = ?
-        WHERE id = ?
+        SET name = %s, email = %s, phone = %s, marketing = %s, newsletter = %s
+        WHERE id = %s
     """,
 (
         update_data['name'],

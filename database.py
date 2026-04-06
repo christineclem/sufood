@@ -3,10 +3,10 @@ from customers_functions import get_connection
 def init_db():
     conn = get_connection()
     cursor = conn.cursor()
-    # id INTERGER PRIMARY KEY -> SERIAL PRIMARY KEY (psycopg2)
+    
     cursor.execute("""
     CREATE TABLE IF NOT EXISTS customers (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        id SERIAL PRIMARY KEY AUTOINCREMENT,
         name TEXT,
         email TEXT,
         phone TEXT,
@@ -19,7 +19,7 @@ def init_db():
 
     cursor.execute("""
     CREATE TABLE IF NOT EXISTS orders (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        id SERIAL PRIMARY KEY AUTOINCREMENT,
         customer_id INTEGER NOT NULL,
         created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
         delivery TEXT,
@@ -32,7 +32,7 @@ def init_db():
 
     cursor.execute("""
     CREATE TABLE IF NOT EXISTS products (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        id SERIAL PRIMARY KEY AUTOINCREMENT,
         price NUMERIC (10, 2),
         created_at TIMESTAMP,
         updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
@@ -41,7 +41,7 @@ def init_db():
 
     cursor.execute("""
     CREATE TABLE IF NOT EXISTS order_items (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        id SERIAL PRIMARY KEY AUTOINCREMENT,
         order_id INTEGER ,
         product_id INTEGER,
         quantity INTEGER,
